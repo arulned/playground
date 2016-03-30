@@ -1,28 +1,21 @@
 package com.falcon.web;
 
-import java.util.Random;
-
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.falcon.service.SomeService;
 
 @RestController
 public class HelloController {
 
-	@RequestMapping(value="/hello")
+	@Autowired
+	private SomeService service;
+	
+	@RequestMapping(value = "/hello")
 	public String hello() {
-		return getInfo();
+		String result = service.getInfo();
+		return result;
 	}
 	
-	@Retryable(maxAttempts=3, backoff=@Backoff(delay=5000, multiplier=2))
-	private String getInfo() {
-		Random random = new Random();
-		int r = random.nextInt(2);
-		if( r == 1) {
-			throw new RuntimeException();
-		} else {
-			return "hello";
-		}
-	}
 }
